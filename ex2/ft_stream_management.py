@@ -1,0 +1,59 @@
+import sys
+import typing
+
+
+def open_file(name_file: str) -> str:
+    file: typing.IO[str] = open(name_file, "r")
+    content = file.read()
+    file.close()
+    return content
+
+
+def write_file(content_file: str) -> str:
+    split_content: list[str] = content_file.split("\n")
+    for i in range(len(split_content) - 1):
+        split_content[i] += "#"
+    return "\n".join(split_content)
+
+
+def saving_data(name_other_file: str, content_new_file: str) -> None:
+    try:
+        if name_other_file:
+            print(f"Saving data to '{name_other_file}'")
+            new_file = open(name_other_file, "w")
+            new_file.write(content_new_file)
+            print(f"Data saved in file '{name_other_file}'")
+        else:
+            print("Not saving data")
+    except (PermissionError) as e:
+        print(f"[STDERR] Error opening file {name_other_file} : {e}", file=sys.stderr)
+        print("Not saving data")
+
+
+def main() -> None:
+    if len(sys.argv) < 2:
+        print("Usage: ft_ancient_text.py <file>")
+        return
+    arg_value = sys.argv[1]
+    print(f"Accessing file '{arg_value}'")
+    try:
+        print("___\n")
+        content = open_file(arg_value)
+        print(content)
+        print("___")
+        print(f"File '{arg_value}' closed.", end="\n\n")
+        print("Transform data:")
+        print("___\n")
+        file_tmp = write_file(content)
+        print(file_tmp)
+        print("___")
+        print("Enter new file name (or empty)", end=": ", flush=True)
+        name_file: str = sys.stdin.readline().strip()
+        saving_data(name_file, file_tmp)
+    except (FileNotFoundError, PermissionError) as e:
+        print(f"[STDERR] Error opening file {arg_value} : {e}", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    print("=== Cyber Archives Recovery ===")
+    main()
