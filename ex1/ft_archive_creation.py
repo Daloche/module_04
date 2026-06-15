@@ -3,6 +3,7 @@ import typing
 
 
 def main() -> None:
+    """Load a file, transform each line, and optionally save the result."""
     if len(sys.argv) < 2:
         print("Usage: ft_ancient_text.py <file>")
         return

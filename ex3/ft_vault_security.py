@@ -1,4 +1,7 @@
-def secure_archive(name_file: str, file_mose: str, messahe: str = "") -> tuple[bool, str]:
+def secure_archive(name_file: str,
+                   file_mose: str,
+                   messahe: str = "") -> tuple[bool, str]:
+    """Open a file for reading or writing and return the operation result."""
     my_bool = False
     try:
         file = open(name_file, file_mose)
@@ -27,4 +30,5 @@ if __name__ == "__main__":
     print("\n")
 
     print("Using 'secure_archive' to write previous content to a new file:")
-    print(secure_archive("new_file.txt", "w", "'Content successfully written to file'"))
+    mes = "'Content successfully written to file'"
+    print(secure_archive("new_file.txt", "w", mes))
