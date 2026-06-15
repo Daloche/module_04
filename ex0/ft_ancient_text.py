@@ -9,9 +9,10 @@ def main() -> None:
     arg_value = sys.argv[1]
     print(f"Accessing file '{arg_value}'")
     try:
+        file = open(arg_value, "r")
         print("___\n")
-        with open(arg_value, "r") as file:
-            print(file.read())
+        print(file.read())
+        file.close()
         print("___")
         print(f"File '{arg_value}' closed.")
     except (FileNotFoundError, PermissionError) as e:

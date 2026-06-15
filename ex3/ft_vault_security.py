@@ -4,14 +4,14 @@ def secure_archive(name_file: str,
     """Open a file for reading or writing and return the operation result."""
     my_bool = False
     try:
-        file = open(name_file, file_mose)
-        if file:
-            my_bool = True
-        if messahe:
-            file.write(messahe)
-            return my_bool, messahe
-        else:
-            return my_bool, file.read()
+        with open(name_file, file_mose) as file:
+            if file:
+                my_bool = True
+            if messahe:
+                file.write(messahe)
+                return my_bool, messahe
+            else:
+                return my_bool, file.read()
     except (FileNotFoundError, PermissionError) as e:
         return my_bool, str(e)
 
