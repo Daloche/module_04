@@ -9,32 +9,42 @@ def main() -> None:
         return
     arg_value = sys.argv[1]
     print(f"Accessing file '{arg_value}'")
+    file: typing.Optional[typing.IO[str]] = None
     try:
-        file: typing.IO[str] = open(arg_value, "r")
-        print("___\n")
-        content = file.read()
-        split_content = content.split("\n")
-        for i in range(len(split_content)):
-            split_content[i] += "#"
+        file = open(arg_value, 'r')
+        content: str = file.read()
+        print("---")
         print(content)
-        print("___")
-        file.close()
-        print(f"File '{arg_value}' closed.", end="\n\n")
-        print("Transform data:")
-        print("___\n")
-        file_tmp = "\n".join(split_content)
-        print(file_tmp)
-        print("___")
-        name_file = input("Enter new file name (or empty): ")
-        if name_file:
+        print("---")
+    except OSError as e:
+        print(f"Error opening file '{arg_value}': {e}")
+        return
+    finally:
+        if file is not None:
+            file.close()
+            print(f"File '{arg_value}' closed.")
+
+    file_tmp: list[str] = content.splitlines()
+    result_tmp: list[str] = [f"{line}#" for line in file_tmp]
+    result: str = "\n".join(result_tmp)
+    result += "\n"
+    print("\nTransform data:")
+    print('---')
+    print(result, end='')
+    print('---')
+
+    name_file = input("Enter new file name (or empty): ")
+    if name_file:
+        try:
             new_file = open(name_file, "w")
-            new_file.write(file_tmp)
-            print(f"Saving data to '{name_file}'")
-            print(f"Data saved in file '{name_file}'")
-        else:
-            print("Not saving data")
-    except (FileNotFoundError, PermissionError) as e:
-        print(f"Error opening file {arg_value} : {e}")
+            new_file.write(result)
+            print(f"Data saved in file '{name_file}'.")
+        except OSError as e:
+            print(f"Error saving file {name_file}: {e}")
+        finally:
+            new_file.close()
+    else:
+        print("Not saving data.")
 
 
 if __name__ == "__main__":

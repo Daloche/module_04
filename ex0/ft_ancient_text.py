@@ -10,13 +10,15 @@ def main() -> None:
     print(f"Accessing file '{arg_value}'")
     try:
         file = open(arg_value, "r")
-        print("___\n")
+        print("---\n")
         print(file.read())
-        file.close()
-        print("___")
-        print(f"File '{arg_value}' closed.")
-    except (FileNotFoundError, PermissionError) as e:
-        print(f"Error opening file {arg_value} : {e}")
+        print("---")
+    except OSError as e:
+        print(f"Error opening file '{arg_value}' : {e}")
+    finally:
+        if file is not None:
+            file.close()
+            print(f"File '{arg_value}' closed.")
 
 
 if __name__ == "__main__":

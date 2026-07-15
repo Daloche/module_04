@@ -1,18 +1,18 @@
 def secure_archive(name_file: str,
-                   file_mose: str,
-                   messahe: str = "") -> tuple[bool, str]:
+                   file_mode: str = "r",
+                   message: str = "") -> tuple[bool, str]:
     """Open a file for reading or writing and return the operation result."""
     my_bool = False
     try:
-        with open(name_file, file_mose) as file:
+        with open(name_file, file_mode) as file:
             if file:
                 my_bool = True
-            if messahe:
-                file.write(messahe)
-                return my_bool, messahe
+            if message and 'w' in file_mode:
+                file.write(message)
+                return my_bool, message
             else:
                 return my_bool, file.read()
-    except (FileNotFoundError, PermissionError) as e:
+    except (OSError) as e:
         return my_bool, str(e)
 
 
