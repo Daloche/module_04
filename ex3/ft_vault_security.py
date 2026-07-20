@@ -1,35 +1,34 @@
-from pathlib import Path
-
-
 def secure_archive(
-    name_file: str,
-    file_mode: str = "r",
-    message: str = "",
+    name_file: str, mode: str = "r", message: str = ""
 ) -> tuple[bool, str]:
-    """Open a file for reading or writing and return the operation result."""
+    """Open a file for reading or writing securely using a context manager."""
     try:
-        with open(name_file, file_mode) as file:
-            if message:
+        with open(name_file, mode) as file:
+            if "w" in mode or "a" in mode:
                 file.write(message)
-                return True, message
-            if "r" in file_mode or "+" in file_mode:
+                return True, "Content successfully written to file"
+            else:
                 return True, file.read()
-            return True, ""
     except OSError as e:
+        # Renvoie False accompagné du message d'erreur système
         return False, str(e)
 
 
 if __name__ == "__main__":
-    base_dir = Path(__file__).resolve().parent
+    print("=== Cyber Archives Security ===")
 
     print("Using 'secure_archive' to read from a nonexistent file:")
-    print(secure_archive(str(base_dir / "secure_archive"), "r"))
+    print(secure_archive("/not/existing/file", "r"))
+    print()
+
+    print("Using 'secure_archive' to read from an inaccessible file:")
+    print(secure_archive("/etc/master.passwd", "r"))
     print()
 
     print("Using 'secure_archive' to read from a regular file:")
-    print(secure_archive(str(base_dir / "ancient_fragment.txt"), "r"))
+    # On suppose ici que le fichier 'ancient_fragment.txt' existe pour le test
+    print(secure_archive("ancient_fragment.txt", "r"))
     print()
 
     print("Using 'secure_archive' to write previous content to a new file:")
-    mes = "'Content successfully written to file'"
-    print(secure_archive(str(base_dir / "new_file.txt"), "w", mes))
+    print(secure_archive("new_file.txt", "w", "Test content"))

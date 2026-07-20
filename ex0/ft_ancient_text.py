@@ -15,9 +15,7 @@ def main() -> None:
     file: typing.Optional[typing.IO[str]] = None
     try:
         file = open(arg_value, "r")
-        print("---\n")
-        print(file.read())
-        print("---")
+        print(file.read(), end="")
     except OSError as e:
         print(f"Error opening file '{arg_value}': {e}")
     finally:

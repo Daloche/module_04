@@ -13,20 +13,20 @@ def main() -> None:
     print(f"Accessing file '{arg_value}'")
 
     file: typing.Optional[typing.IO[str]] = None
+    content: str = ""
     try:
         file = open(arg_value, "r")
-        content: str = file.read()
-        print("---")
+        content = file.read()
         print(content, end="")
-        print("---")
     except OSError as e:
         print(f"Error opening file '{arg_value}': {e}")
-        return
+        return  # On quitte si on ne peut pas lire le fichier source
     finally:
         if file is not None:
             file.close()
             print(f"File '{arg_value}' closed.")
 
+    # Transformation : ajouter '#' à la fin de chaque ligne non vide
     lines = content.splitlines()
     transformed_lines = [f"{line}#" for line in lines]
     result = "\n".join(transformed_lines)
@@ -34,9 +34,7 @@ def main() -> None:
         result += "\n"
 
     print("\nTransform data:")
-    print("---")
     print(result, end="")
-    print("---")
 
     try:
         name_file: str = input("Enter new file name (or empty): ")
@@ -45,12 +43,16 @@ def main() -> None:
 
     if name_file:
         print(f"Saving data to '{name_file}'")
+        new_file: typing.Optional[typing.IO[str]] = None
         try:
-            with open(name_file, "w") as new_file:
-                new_file.write(result)
+            new_file = open(name_file, "w")
+            new_file.write(result)
             print(f"Data saved in file '{name_file}'.")
         except OSError as e:
             print(f"Error saving file '{name_file}': {e}")
+        finally:
+            if new_file is not None:
+                new_file.close()
     else:
         print("Not saving data.")
 
