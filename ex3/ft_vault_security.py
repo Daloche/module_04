@@ -1,34 +1,35 @@
-def secure_archive(name_file: str,
-                   file_mode: str = "r",
-                   message: str = "") -> tuple[bool, str]:
+from pathlib import Path
+
+
+def secure_archive(
+    name_file: str,
+    file_mode: str = "r",
+    message: str = "",
+) -> tuple[bool, str]:
     """Open a file for reading or writing and return the operation result."""
-    my_bool = False
     try:
         with open(name_file, file_mode) as file:
-            if file:
-                my_bool = True
-            if message and 'w' in file_mode:
+            if message:
                 file.write(message)
-                return my_bool, message
-            else:
-                return my_bool, file.read()
-    except (OSError) as e:
-        return my_bool, str(e)
+                return True, message
+            if "r" in file_mode or "+" in file_mode:
+                return True, file.read()
+            return True, ""
+    except OSError as e:
+        return False, str(e)
 
 
 if __name__ == "__main__":
-    print("Using 'secure_archive' to read from a nonexistent file:")
-    print(secure_archive("secure_archive", "r"))
-    print("\n")
+    base_dir = Path(__file__).resolve().parent
 
-    print("Using 'secure_archive' to read from an inaccessible file:")
-    print(secure_archive("test.txt", "r"))
-    print("\n")
+    print("Using 'secure_archive' to read from a nonexistent file:")
+    print(secure_archive(str(base_dir / "secure_archive"), "r"))
+    print()
 
     print("Using 'secure_archive' to read from a regular file:")
-    print(secure_archive("ancient_fragment.txt", "r"))
-    print("\n")
+    print(secure_archive(str(base_dir / "ancient_fragment.txt"), "r"))
+    print()
 
     print("Using 'secure_archive' to write previous content to a new file:")
     mes = "'Content successfully written to file'"
-    print(secure_archive("new_file.txt", "w", mes))
+    print(secure_archive(str(base_dir / "new_file.txt"), "w", mes))

@@ -7,14 +7,17 @@ def main() -> None:
     if len(sys.argv) < 2:
         print("Usage: ft_ancient_text.py <file>")
         return
+
     arg_value = sys.argv[1]
+    print("=== Cyber Archives Recovery & Preservation ===")
     print(f"Accessing file '{arg_value}'")
+
     file: typing.Optional[typing.IO[str]] = None
     try:
-        file = open(arg_value, 'r')
+        file = open(arg_value, "r")
         content: str = file.read()
         print("---")
-        print(content)
+        print(content, end="")
         print("---")
     except OSError as e:
         print(f"Error opening file '{arg_value}': {e}")
@@ -24,29 +27,33 @@ def main() -> None:
             file.close()
             print(f"File '{arg_value}' closed.")
 
-    file_tmp: list[str] = content.splitlines()
-    result_tmp: list[str] = [f"{line}#" for line in file_tmp]
-    result: str = "\n".join(result_tmp)
-    result += "\n"
-    print("\nTransform data:")
-    print('---')
-    print(result, end='')
-    print('---')
+    lines = content.splitlines()
+    transformed_lines = [f"{line}#" for line in lines]
+    result = "\n".join(transformed_lines)
+    if content.endswith("\n") and transformed_lines:
+        result += "\n"
 
-    name_file = input("Enter new file name (or empty): ")
+    print("\nTransform data:")
+    print("---")
+    print(result, end="")
+    print("---")
+
+    try:
+        name_file: str = input("Enter new file name (or empty): ")
+    except EOFError:
+        name_file = ""
+
     if name_file:
+        print(f"Saving data to '{name_file}'")
         try:
-            new_file = open(name_file, "w")
-            new_file.write(result)
+            with open(name_file, "w") as new_file:
+                new_file.write(result)
             print(f"Data saved in file '{name_file}'.")
         except OSError as e:
-            print(f"Error saving file {name_file}: {e}")
-        finally:
-            new_file.close()
+            print(f"Error saving file '{name_file}': {e}")
     else:
         print("Not saving data.")
 
 
 if __name__ == "__main__":
-    print("=== Cyber Archives Recovery ===")
     main()
