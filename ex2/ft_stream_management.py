@@ -15,54 +15,64 @@ def write_file(content_file: str) -> str:
 def main() -> None:
     """Coordinate reading, transforming, and saving archive data."""
     if len(sys.argv) < 2:
-        print("Usage: ft_ancient_text.py <file>")
+        print("Usage: ft_stream_management.py <file>")
         return
 
     arg_value: str = sys.argv[1]
     print("=== Cyber Archives Recovery & Preservation ===")
     print(f"Accessing file '{arg_value}'")
 
-    file: typing.Optional[typing.IO[str]] = None
-    content: str = ""
-
     try:
-        file = open(arg_value, "r")
-        content = file.read()
-        print(content, end="")
+        file: typing.IO[str] = open(arg_value, "r")
     except OSError as e:
         print(
             f"[STDERR] Error opening file '{arg_value}': {e}",
             file=sys.stderr,
         )
         return
+
+    try:
+        content = file.read()
+        print("---")
+        print()
+        print(content, end="")
+        if not content.endswith("\n"):
+            print()
+        print()
+        print("---")
     finally:
-        if file is not None:
-            file.close()
-            print(f"File '{arg_value}' closed.")
+        file.close()
+        print(f"File '{arg_value}' closed.")
 
     file_tmp: str = write_file(content)
     print("\nTransform data:")
+    print("---")
+    print()
     print(file_tmp, end="")
+    if not file_tmp.endswith("\n"):
+        print()
+    print()
+    print("---")
 
     print("Enter new file name (or empty): ", end="", flush=True)
     name_file: str = sys.stdin.readline().rstrip("\r\n")
 
     if name_file:
         print(f"Saving data to '{name_file}'")
-        new_file: typing.Optional[typing.IO[str]] = None
         try:
-            new_file = open(name_file, "w")
-            new_file.write(file_tmp)
-            print(f"Data saved in file '{name_file}'.")
+            new_file: typing.IO[str] = open(name_file, "w")
         except OSError as e:
             print(
                 f"[STDERR] Error opening file '{name_file}': {e}",
                 file=sys.stderr,
             )
             print("Data not saved.")
+            return
+        try:
+            new_file.write(file_tmp)
+            print(f"Data saved in file '{name_file}'.")
         finally:
-            if new_file is not None:
-                new_file.close()
+            new_file.close()
     else:
         print("Not saving data.")
 

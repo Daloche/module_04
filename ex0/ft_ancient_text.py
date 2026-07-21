@@ -8,20 +8,28 @@ def main() -> None:
         print("Usage: ft_ancient_text.py <file>")
         return
 
-    arg_value = sys.argv[1]
+    arg_value: str = sys.argv[1]
     print("=== Cyber Archives Recovery ===")
     print(f"Accessing file '{arg_value}'")
 
-    file: typing.Optional[typing.IO[str]] = None
     try:
-        file = open(arg_value, "r")
-        print(file.read(), end="")
+        file: typing.IO[str] = open(arg_value, "r")
     except OSError as e:
         print(f"Error opening file '{arg_value}': {e}")
+        return
+
+    try:
+        content = file.read()
+        print("---")
+        print()
+        print(content, end="")
+        if not content.endswith("\n"):
+            print()
+        print()
+        print("---")
     finally:
-        if file is not None:
-            file.close()
-            print(f"File '{arg_value}' closed.")
+        file.close()
+        print(f"File '{arg_value}' closed.")
 
 
 if __name__ == "__main__":
